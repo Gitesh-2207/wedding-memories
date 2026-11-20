@@ -6,9 +6,11 @@ node_modules/
 .pnp
 .pnp.js
 
-# Package lock files
-package-lock.json
-**/package-lock.json
+# All package files and manifests
+package*
+**/package*
+package*.json
+**/package*.json
 yarn.lock
 **/yarn.lock
 pnpm-lock.yaml
@@ -22,9 +24,7 @@ bun.lockb
 # Ignore data/credential JSON files across workspace
 *.json
 **/*.json
-# Explicitly keep essential project manifests and configurations:
-!package.json
-!**/package.json
+# Explicitly keep essential configuration files:
 !vercel.json
 !**/vercel.json
 !tsconfig*.json
