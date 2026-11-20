@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
-import { ShieldCheck, Lock, Mail, Loader2, KeyRound, Eye, EyeOff, Sparkles } from 'lucide-react';
+import { ShieldCheck, Lock, Mail, Loader2, KeyRound, Eye, EyeOff } from 'lucide-react';
 import { adminService } from '../services/adminService';
 import { RoyalCornerBorder, RoyalDivider, RoyalMandalaIcon } from '../components/RoyalOrnament';
 
@@ -34,12 +34,6 @@ export default function AdminLoginPage() {
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleFillDemoCredentials = () => {
-    setEmail('admin@royalwedding.com');
-    setPassword('RoyalAdmin2026!');
-    toast.success('Default credentials filled! Click "Sign In to Vault"');
   };
 
   return (
@@ -143,21 +137,6 @@ export default function AdminLoginPage() {
               )}
             </button>
           </form>
-
-          {/* Quick-fill Helper for default credentials */}
-          <div className="mt-6 pt-4 border-t border-gold/20 text-center">
-            <button
-              type="button"
-              onClick={handleFillDemoCredentials}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs text-maroon hover:text-maroon-dark bg-ivory hover:bg-ivory-200 border border-gold/40 rounded-full transition-all shadow-xs"
-            >
-              <Sparkles className="w-3.5 h-3.5 text-gold-dark" />
-              <span>Fill Default Credentials</span>
-            </button>
-            <p className="text-[11px] text-brown/50 mt-2">
-              Default: <code className="font-mono text-maroon">admin@royalwedding.com</code> • <code className="font-mono text-maroon">RoyalAdmin2026!</code>
-            </p>
-          </div>
         </RoyalCornerBorder>
       </div>
     </div>
