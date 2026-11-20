@@ -6,11 +6,13 @@ node_modules/
 .pnp
 .pnp.js
 
-# All package files and manifests
-package*
-**/package*
-package*.json
-**/package*.json
+# Keep package manifests for deployment
+!package.json
+!**/package.json
+!package-lock.json
+!**/package-lock.json
+
+# Lockfiles from unused package managers
 yarn.lock
 **/yarn.lock
 pnpm-lock.yaml
@@ -25,6 +27,10 @@ bun.lockb
 *.json
 **/*.json
 # Explicitly keep essential configuration files:
+!package.json
+!**/package.json
+!package-lock.json
+!**/package-lock.json
 !vercel.json
 !**/vercel.json
 !tsconfig*.json
