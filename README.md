@@ -30,7 +30,7 @@
   - Expired reservation reconciliation with MongoDB TTL indexes.
 - **Secure Cloud Storage (Cloudinary & Cloudflare R2)**:
   - **Cloudinary Integration**: Automatic optimization and CDN delivery for photos and videos.
-  - **Cloudflare R2 Integration**: Private S3-compatible bucket with signed streaming proxy (`/api/admin/memories/:id/stream`).
+  - **Cloudflare R2 Integration**: Private S3-compatible bucket with signed streaming proxy.
   - Magic byte binary inspection via `file-type` to prevent disguised executables or MIME spoofing.
 - **Administrator Vault & Dashboard**:
   - Protected with JWT authentication and bcrypt password hashing.
@@ -49,61 +49,10 @@
 | :--- | :--- |
 | **Frontend** | React 18, Vite 6, Tailwind CSS, React Router DOM v7, Axios, Lucide React, React Dropzone, React Hot Toast, Canvas Confetti |
 | **Backend API** | Node.js (ES Modules), Express.js, Mongoose, JWT, bcryptjs, Zod, Helmet, Express Rate Limit, Multer, File-Type, QRCode |
-| **Media Storage** | Cloudinary (Default / Recommended) OR Cloudflare R2 (S3-compatible via `@aws-sdk/client-s3`) |
-| **Database** | MongoDB Atlas (M0 Free Tier or higher) |
-| **Edge Gateway** | Cloudflare Workers (`worker/`) |
+| **Media Storage** | Cloudinary (Default) OR Cloudflare R2 (S3-compatible via `@aws-sdk/client-s3`) |
+| **Database** | MongoDB Atlas |
+| **Edge Gateway** | Cloudflare Workers |
 | **Bot Protection** | Cloudflare Turnstile |
-
----
-
-## 📂 Project Directory Structure
-
-```text
-wedding-memories/
-├── backend/
-│   ├── src/
-│   │   ├── config/          # Constants, MongoDB connection, Cloudinary/R2 client
-│   │   ├── controllers/     # Upload & Admin controllers
-│   │   ├── middleware/      # Auth, Turnstile, Rate limiters
-│   │   ├── models/          # Wedding, Admin, Memory, UploadReservation, AuditLog
-│   │   ├── routes/          # Express route definitions
-│   │   ├── services/        # Atomic storage quota service
-│   │   ├── utils/           # Magic number / file signature validator
-│   │   ├── validators/      # Zod request payload schemas
-│   │   ├── app.js           # Express app with Helmet, CORS, and routes
-│   │   └── server.js        # Server bootstrap entrypoint
-│   ├── tests/               # System test suite
-│   ├── .env.example         # Backend environment template
-│   └── package.json
-├── frontend/
-│   ├── public/              # Static assets, Open Graph images & royal mandala icons
-│   ├── src/
-│   │   ├── components/      # Navbar, Footer, Ornaments, Turnstile, Modal, StorageBar
-│   │   ├── pages/           # Home, Upload, Success, Login, Dashboard, Galleries, Settings
-│   │   ├── services/        # Axios API, upload & admin services
-│   │   ├── styles/          # Tailwind directives & royal custom theme
-│   │   ├── App.jsx          # Route configurations
-│   │   └── main.jsx         # App root entrypoint
-│   ├── index.html           # HTML template with Google Fonts & Turnstile scripts
-│   ├── tailwind.config.js   # Royal theme palette & custom styles
-│   ├── vite.config.js       # Vite configuration with backend proxy
-│   ├── .env.example         # Frontend environment template
-│   └── package.json
-├── worker/
-│   ├── src/                 # Cloudflare Worker Edge Gateway implementation
-│   ├── wrangler.toml        # Cloudflare R2 bucket bindings configuration
-│   ├── .dev.vars.example    # Worker secrets template
-│   └── package.json
-├── database/
-│   ├── seed/seed.js         # Initial wedding setup & admin credentials generator
-│   └── migrations/          # MongoDB index creation scripts
-├── docs/
-│   ├── ARCHITECTURE.md      # Detailed system architecture
-│   ├── DEPLOYMENT_GUIDE.md  # Production deployment on Pages/Workers/R2/Atlas
-│   └── API_DOCUMENTATION.md # Complete REST API reference
-├── .gitignore               # Comprehensive Git ignore rules (secrets, credentials, lockfiles)
-└── README.md
-```
 
 ---
 
@@ -112,50 +61,30 @@ wedding-memories/
 ### 1. Prerequisites
 - **Node.js** `>= 18.0.0`
 - **npm** `>= 9.0.0`
-- A free **MongoDB Atlas** database cluster (or local MongoDB)
-- A free **Cloudinary** account (or Cloudflare R2 bucket)
+- MongoDB database (local or MongoDB Atlas)
+- Cloud storage account (Cloudinary or Cloudflare R2)
 
 ---
 
 ### 2. Backend Setup
 
-1. Navigate to the backend directory and configure your environment:
+1. Navigate to the backend directory and copy the environment configuration:
    ```bash
    cd backend
    cp .env.example .env
    ```
 
-2. Fill in your credentials in `backend/.env`:
-   ```env
-   PORT=5000
-   NODE_ENV=development
-   FRONTEND_URL=http://localhost:5173
+2. Open `.env` and fill in your connection details (refer to `.env.example`).
 
-   # Authentication Secret
-   JWT_SECRET=your_super_secret_jwt_key_here
-
-   # MongoDB Atlas Connection
-   MONGODB_URI=mongodb+srv://<username>:<password>@cluster0.yourdomain.mongodb.net/wedding_memories?retryWrites=true&w=majority
-
-   # Cloud Media Storage (Cloudinary)
-   CLOUDINARY_CLOUD_NAME=your_cloudinary_cloud_name
-   CLOUDINARY_API_KEY=your_cloudinary_api_key
-   CLOUDINARY_API_SECRET=your_cloudinary_api_secret
-   ```
-
-3. Initialize the wedding details and create the administrator account:
+3. Initialize the database:
    ```bash
    npm run seed
-   ```
-   *(To customize bride/groom names or admin credentials, you can pass arguments)*:
-   ```bash
-   npm run seed -- --bride "Khushbu" --groom "Abhay" --slug "khushbu-abhay" --email "admin@royalwedding.com" --password "YourCustomPassword123!"
    ```
 
 4. Start the backend development server:
    ```bash
    npm run dev
-   # Backend running on http://localhost:5000
+   # Backend runs on http://localhost:5000
    ```
 
 ---
@@ -168,70 +97,54 @@ wedding-memories/
    cp .env.example .env
    ```
 
-2. Configure `frontend/.env`:
-   ```env
-   VITE_API_URL=http://localhost:5000/api
-   # Leave blank for local testing, or add your Cloudflare Turnstile site key
-   VITE_CLOUDFLARE_TURNSTILE_SITE_KEY=
-   ```
-
-3. Start the frontend development server:
+2. Start the frontend development server:
    ```bash
    npm run dev
-   # Vite development server running on http://localhost:5173
+   # Frontend runs on http://localhost:5173
    ```
 
 ---
 
-### 4. Accessing the Application
+### 4. Application Routes
 
-- 🌸 **Royal Welcome Page**: [`http://localhost:5173/`](http://localhost:5173/)
-- 📸 **Guest Photo & Video Upload**: [`http://localhost:5173/upload/khushbu-abhay`](http://localhost:5173/upload/khushbu-abhay)
-- 🔐 **Admin Vault Portal**: [`http://localhost:5173/admin/login`](http://localhost:5173/admin/login)
+- 🌸 **Welcome Page**: `http://localhost:5173/`
+- 📸 **Guest Media Upload**: `http://localhost:5173/upload/:slug`
+- 🔐 **Admin Vault Portal**: `http://localhost:5173/admin/login`
 
 ---
 
 ## 🧪 Automated Testing
 
-The backend includes an automated test suite verifying file signature validation, size boundaries, atomic reservation rollback, and quota exhaustion:
+The project includes an automated test suite verifying file validation, security, and quota operations:
 
 ```bash
 cd backend
 npm test
 ```
 
-### Verified Test Suite:
-- [x] Admin authentication & bcrypt password hashing
-- [x] Magic-number file signature validation (JPEG, PNG, MP4, WebM)
-- [x] Rejection of malicious/spoofed files disguised with media extensions
-- [x] Enforcement of photo `<= 15 MiB` and video `<= 30 MiB` limits
-- [x] Atomic 5 GiB total quota reservation & concurrent lock management
+### Verified Test Cases:
+- [x] Admin authentication & bcrypt password security
+- [x] File signature validation (JPEG, PNG, MP4, WebM)
+- [x] Rejection of malicious/spoofed files
+- [x] Photo (`<= 15 MiB`) and video (`<= 30 MiB`) file size limits
+- [x] Enforced 5 GiB atomic quota reservation
 - [x] Immediate quota recovery on upload cancellation or failure
 - [x] Safe quota recovery upon admin file deletion
-- [x] Wedding upload enable/disable master toggle
+- [x] Guest upload enable/disable master switch
 
 ---
 
 ## ☁️ Deployment
 
-For production deployments, please consult the complete [Deployment Guide](docs/DEPLOYMENT_GUIDE.md):
+For production deployments, refer to the [Deployment Guide](docs/DEPLOYMENT_GUIDE.md):
 
-- **Frontend**: Deploy on [Cloudflare Pages](https://pages.cloudflare.com/) or [Vercel](https://vercel.com/) with single-page app redirects configured.
-- **Backend API**: Deploy on [Render](https://render.com/), [Railway](https://railway.app/), or any container/VPS provider.
-- **Database**: [MongoDB Atlas](https://www.mongodb.com/cloud/atlas) with automated index synchronization.
-- **Media Storage**: [Cloudinary](https://cloudinary.com/) or [Cloudflare R2](https://www.cloudflare.com/developer-platform/r2/).
-
----
-
-## 🛡️ Security & Privacy Best Practices
-
-- **Zero Hardcoded Secrets**: All sensitive keys, connection strings, and tokens are stored strictly in `.env` files and excluded via `.gitignore`.
-- **Private Media Delivery**: Cloud storage assets are accessed through authenticated endpoints or signed URLs.
-- **MIME & Magic Byte Verification**: File payloads are inspected at the binary level before storage.
-- **Rate Limiting**: Aggressive rate limiting on upload initiation, admin login, and guest requests.
+- **Frontend**: [Cloudflare Pages](https://pages.cloudflare.com/) or [Vercel](https://vercel.com/)
+- **Backend API**: [Render](https://render.com/) or [Railway](https://railway.app/)
+- **Database**: [MongoDB Atlas](https://www.mongodb.com/cloud/atlas)
+- **Media Storage**: [Cloudinary](https://cloudinary.com/) or [Cloudflare R2](https://www.cloudflare.com/developer-platform/r2/)
 
 ---
 
 ## 📄 License
 
-This project is open-source under the [MIT License](LICENSE).
+This project is licensed under the [MIT License](LICENSE).
