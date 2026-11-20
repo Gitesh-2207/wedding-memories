@@ -1,0 +1,14 @@
+name = "royal-wedding-memories-worker"
+main = "src/index.js"
+compatibility_date = "2024-09-23"
+compatibility_flags = ["nodejs_compat"]
+
+[vars]
+ENVIRONMENT = "production"
+MAX_PHOTO_BYTES = 15728640
+MAX_VIDEO_BYTES = 31457280
+TOTAL_QUOTA_BYTES = 5368709120
+
+[[r2_buckets]]
+binding = "MEMORIES_BUCKET"
+bucket_name = "royal-wedding-memories-bucket"

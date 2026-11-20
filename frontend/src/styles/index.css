@@ -1,0 +1,66 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    background-color: #F8F3E9;
+    color: #45372E;
+    font-family: 'Inter', sans-serif;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Playfair Display', Georgia, serif;
+  }
+}
+
+/* Royal Indian Wedding Custom Ornaments and Shimmer */
+.gold-border {
+  border: 1px solid #D8B978;
+}
+
+.gold-border-double {
+  border: 3px double #D8B978;
+}
+
+.gold-glow:hover {
+  box-shadow: 0 0 20px rgba(216, 185, 120, 0.45);
+}
+
+.royal-card {
+  background: #FFFFFF;
+  border: 1px solid #EDE4D1;
+  box-shadow: 0 10px 30px -5px rgba(69, 55, 46, 0.06);
+  border-radius: 1rem;
+}
+
+.royal-input {
+  background-color: #FFFFFF;
+  border: 1px solid #DFD1B3;
+  color: #45372E;
+  border-radius: 0.5rem;
+  padding: 0.75rem 1rem;
+  transition: all 0.2s ease-in-out;
+}
+
+.royal-input:focus {
+  outline: none;
+  border-color: #8C2436;
+  box-shadow: 0 0 0 3px rgba(140, 36, 54, 0.15);
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #F8F3E9;
+}
+::-webkit-scrollbar-thumb {
+  background: #D8B978;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #8C2436;
+}

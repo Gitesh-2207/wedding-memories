@@ -1,0 +1,19 @@
+{
+  "name": "royal-wedding-memories-root",
+  "version": "1.0.0",
+  "description": "Royal Wedding Memories - Full Stack Web Application",
+  "private": true,
+  "workspaces": [
+    "backend",
+    "frontend",
+    "worker"
+  ],
+  "scripts": {
+    "start:backend": "npm run start --workspace=backend",
+    "dev:backend": "npm run dev --workspace=backend",
+    "dev:frontend": "npm run dev --workspace=frontend",
+    "build:frontend": "npm run build --workspace=frontend",
+    "seed": "npm run seed --workspace=backend",
+    "test": "npm run test --workspace=backend"
+  }
+}
